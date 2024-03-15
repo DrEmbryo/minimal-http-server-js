@@ -25,9 +25,13 @@ module.exports = function () {
         ""
       );
 
-      return [startLine, combinedHeaders, body ? body : "", CRLF]
-        .filter((el) => el && el !== "")
-        .join(CRLF);
+      return (
+        startLine +
+        CRLF +
+        (combinedHeaders.length ? combinedHeaders : "") +
+        CRLF +
+        (body ? body + CRLF : "")
+      );
     },
   };
 };
