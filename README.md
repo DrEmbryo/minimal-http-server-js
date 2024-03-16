@@ -11,6 +11,7 @@ Features I've implemented so far:
 - Core Functionality: handling incoming HTTP requests, processing them, and sending appropriate responses.
 - Routing and Request Handling: includes routing mechanisms to direct incoming requests to the appropriate handlers based on the requested URL paths.
 - Middleware Support: support of middleware functions, enabling the execution of additional logic before handling requests.
+- Template engines support: support of template engines like ejs, pug, etc., enabling the execution of template logic.
 
 ### Installation option:
 
