@@ -1,6 +1,7 @@
 const net = require("net");
 const parseRequest = require("./reqParser");
 const buildResponse = require("./resBuilder");
+const engine = require("./templateEngine");
 
 module.exports = function () {
   const config = {
@@ -8,14 +9,17 @@ module.exports = function () {
     templateEngine: null,
   };
 
-  function registerTemplateEngine(templateEngine, options) {
+  function registerTemplateEngine(templateEngine, options, renderStrategy) {
     if (config.templateEngine) {
-      throw new Error(`Template engine was already registered`);
-    } else {
-      config.templateEngine = {
-        instance: templateEngine,
-        options,
+      throw {
+        name: "TemplateEngineError",
+        message: `Template engine already registered`,
+        code: 500,
       };
+    } else {
+      config.templateEngine = engine(templateEngine)
+        .setEngineOptions(options)
+        .setRenderStrategy(renderStrategy);
     }
     return this;
   }

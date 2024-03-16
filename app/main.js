@@ -12,9 +12,7 @@ const templateRouter = require("./modules/template");
 
 const PORT = 4221;
 
-App.registerTemplateEngine(ejs, {
-  templateDir: path.join(__dirname, "views"),
-})
+App.registerTemplateEngine(ejs, { templateDir: path.join(__dirname, "views") })
   .registerRouter(baseRouter)
   .registerRouter(userAgentRouter)
   .registerRouter(echoRouter)

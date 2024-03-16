@@ -1,5 +1,3 @@
-const fs = require("node:fs");
-const path = require("path");
 const { STATUS_CODES, PROTOCOL_VERSION, CRLF } = require("./constants/index");
 
 function combineHeaders(headers) {
@@ -35,43 +33,18 @@ module.exports = function (templateEngine) {
       return this;
     },
     render: function (templatePath, ctx) {
-      if (!templateEngine.instance)
-        throw {
-          name: "ViewEngineError",
-          message: `View engine is not registered`,
-          code: 500,
-        };
-
       const { startLine, headers } = res;
+      const template = templateEngine.render(templatePath, ctx);
 
-      const filePath = templateEngine?.options?.templateDir
-        ? path.join(templateEngine.options.templateDir, templatePath)
-        : templatePath;
-      const isFileExists = fs.existsSync(filePath);
-
-      if (isFileExists) {
-        const templateFile = fs.readFileSync(filePath).toString();
-        let template;
-        if (templateEngine.options.renderFn) {
-          template = templateEngine.instance[templateEngine.options.renderFn](
-            templateFile,
-            ctx
-          );
-        } else {
-          const compile = templateEngine.instance.compile(templateFile);
-          template = compile(ctx);
-        }
-
-        return buildResponse(
-          startLine,
-          {
-            "Content-Type": "text/html",
-            "Content-Length": template.length,
-            ...combineHeaders(headers),
-          },
-          template
-        );
-      }
+      return buildResponse(
+        startLine,
+        {
+          "Content-Type": "text/html",
+          "Content-Length": template.length,
+          ...combineHeaders(headers),
+        },
+        template
+      );
     },
     send: function () {
       const { startLine, headers, body } = res;
