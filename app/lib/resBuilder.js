@@ -58,7 +58,8 @@ module.exports = function (templateEngine) {
             ctx
           );
         } else {
-          template = templateEngine.instance.compile(templateFile, ctx);
+          const compile = templateEngine.instance.compile(templateFile);
+          template = compile(ctx);
         }
 
         return buildResponse(

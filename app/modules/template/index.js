@@ -1,14 +1,16 @@
 const Router = require("../../lib/router");
-const requestLogMiddleware = require("../../middlewares/requestLogs");
 
-const templateRouter = new Router("/template").get(
-  "/ejs",
-  (req, res) =>
-    res.status(200).render("index.ejs", {
+const templateRouter = new Router("/template")
+  .get("/ejs", (req, res) =>
+    res.status(200).render("ejs.ejs", {
       title: "ejs render",
       body: "this page rendered with ejs template engine",
-    }),
-  { wildcard: false, middleware: [requestLogMiddleware] }
-);
+    })
+  )
+  .get("/pug", (req, res) =>
+    res.status(200).render("pug.pug", {
+      body: "this page rendered with pug template engine",
+    })
+  );
 
 module.exports = templateRouter;

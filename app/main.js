@@ -1,5 +1,6 @@
 const path = require("path");
 let ejs = require("ejs");
+// let pug = require("pug");
 
 const App = require("./lib/server")();
 
@@ -13,7 +14,6 @@ const PORT = 4221;
 
 App.registerTemplateEngine(ejs, {
   templateDir: path.join(__dirname, "views"),
-  renderFn: "render",
 })
   .registerRouter(baseRouter)
   .registerRouter(userAgentRouter)
