@@ -3,15 +3,30 @@ const parseRequest = require("./reqParser");
 const buildResponse = require("./resBuilder");
 
 module.exports = function () {
-  const registeredRouters = new Map();
+  const config = {
+    registeredRouters: new Map(),
+    templateEngine: null,
+  };
+
+  function registerTemplateEngine(templateEngine, options) {
+    if (config.templateEngine) {
+      throw new Error(`Template engine was already registered`);
+    } else {
+      config.templateEngine = {
+        instance: templateEngine,
+        options,
+      };
+    }
+    return this;
+  }
 
   function registerRouter(router) {
-    if (registeredRouters.has(router.basePath)) {
+    if (config.registeredRouters.has(router.basePath)) {
       throw new Error(
         `Router with base path of ${router.basePath} already exists`
       );
     } else {
-      registeredRouters.set(router.basePath, router);
+      config.registeredRouters.set(router.basePath, router);
     }
     return this;
   }
@@ -24,11 +39,11 @@ module.exports = function () {
     socket.on("data", (data) => {
       try {
         const req = parseRequest(data);
-        const res = buildResponse();
+        const res = buildResponse(config.templateEngine);
 
-        if (registeredRouters.has(req.path.base)) {
+        if (config.registeredRouters.has(req.path.base)) {
           socket.write(
-            registeredRouters.get(req.path.base).handleRout(req, res)
+            config.registeredRouters.get(req.path.base).handleRout(req, res)
           );
         } else
           throw {
@@ -50,5 +65,5 @@ module.exports = function () {
     });
   });
 
-  return { server, registerRouter };
+  return { server, registerRouter, registerTemplateEngine };
 };
