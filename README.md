@@ -12,6 +12,7 @@ Features I've implemented so far:
 - Routing and Request Handling: includes routing mechanisms to direct incoming requests to the appropriate handlers based on the requested URL paths.
 - Middleware Support: support of middleware functions, enabling the execution of additional logic before handling requests.
 - Template engines support: support of template engines like ejs, pug, etc., enabling the execution of template logic.
+- Static File Serving: The server can serve static files such as HTML, CSS, JavaScript, images, and other assets to clients upon request, enhancing its capabilities for web development projects.
 
 ### Installation option:
 
