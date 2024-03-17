@@ -3,7 +3,6 @@ const path = require("path");
 
 const defaultRenderStrategy =
   (templateEngine, options) => (templatePath, ctx) => {
-    console.log(options);
     const filePath = options?.templateDir
       ? path.join(options.templateDir, templatePath)
       : templatePath;
