@@ -6,6 +6,8 @@ const engine = require("./templateEngine");
 module.exports = function () {
   const config = {
     registeredRouters: new Map(),
+    registeredStaticRouters: new Map(),
+    registeredGlobalStaticRouter: null,
     templateEngine: null,
   };
 
@@ -35,6 +37,28 @@ module.exports = function () {
     return this;
   }
 
+  function registerStaticRouter(router) {
+    if (config.registeredStaticRouters.has(router.basePath)) {
+      throw new Error(
+        `Static router with base path of ${router.basePath} already exists`
+      );
+    } else {
+      config.registeredStaticRouters.set(router.basePath, router);
+    }
+    return this;
+  }
+
+  function registerGlobalStaticRouter(router) {
+    if (config.registeredGlobalStaticRouter) {
+      throw new Error(
+        `Static router with base path of ${router.basePath} already exists`
+      );
+    } else {
+      config.registeredGlobalStaticRouter = router;
+    }
+    return this;
+  }
+
   const server = net.createServer((socket) => {
     socket.on("close", () => {
       socket.end();
@@ -44,6 +68,27 @@ module.exports = function () {
       try {
         const req = parseRequest(data);
         const res = buildResponse(config.templateEngine);
+
+        const isRequestedFile = req.path.full.match(/\.[0-9a-z]+$/i)?.[0];
+        if (isRequestedFile) {
+          if (config.registeredStaticRouters.has(req.path.base)) {
+            socket.write(
+              config.registeredStaticRouters
+                .get(req.path.base)
+                .handleRout(req, res)
+            );
+          } else if (config.registeredGlobalStaticRouter) {
+            socket.write(
+              config.registeredGlobalStaticRouter.handleRout(req, res)
+            );
+          } else
+            throw {
+              name: "RoutingError",
+              message: `Unhandled {${req.path.base}} does not match any static routers`,
+              code: 404,
+            };
+          return;
+        }
 
         if (config.registeredRouters.has(req.path.base)) {
           socket.write(
@@ -69,5 +114,11 @@ module.exports = function () {
     });
   });
 
-  return { server, registerRouter, registerTemplateEngine };
+  return {
+    server,
+    registerRouter,
+    registerStaticRouter,
+    registerGlobalStaticRouter,
+    registerTemplateEngine,
+  };
 };

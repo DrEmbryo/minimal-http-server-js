@@ -3,6 +3,7 @@ let ejs = require("ejs");
 // let pug = require("pug");
 
 const App = require("./lib/server")();
+const staticRouter = require("./lib/staticRouter");
 
 const baseRouter = require("./modules/base");
 const userAgentRouter = require("./modules/userAgent");
@@ -13,6 +14,7 @@ const templateRouter = require("./modules/template");
 const PORT = 4221;
 
 App.registerTemplateEngine(ejs, { templateDir: path.join(__dirname, "views") })
+  .registerGlobalStaticRouter(staticRouter("", path.join(__dirname, "public")))
   .registerRouter(baseRouter)
   .registerRouter(userAgentRouter)
   .registerRouter(echoRouter)

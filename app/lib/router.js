@@ -35,7 +35,7 @@ module.exports = function (basePath) {
         return route.handler(req, res || newRes);
       } else {
         const wildcardRoute = registeredRoutes.find(
-          (route) => route.options.wildcard && route.method === req.method
+          (route) => route?.options?.wildcard && route.method === req.method
         );
         if (!wildcardRoute) {
           throw {
@@ -47,7 +47,7 @@ module.exports = function (basePath) {
           wildcardRoute?.options?.middleware?.map((middleware) =>
             middleware(req, res || newRes)
           );
-          return wildcardRoute.handler(req, res || newRes);
+          return wildcardRoute?.handler(req, res || newRes);
         }
       }
     },
