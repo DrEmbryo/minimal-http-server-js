@@ -19,10 +19,12 @@ Features I've implemented so far:
 - Nix flake + pnpm:
   1. Allow [nix flakes](https://nixos.wiki/wiki/Flakes) in your configuration
   2. Open dev shell in your terminal by running `nix develop`
-  3. Install all dependencies by running `node main.js`
+  3. Install all dependencies by running `pnpm install`
+  4. Execute `node main.js` script
 - Without usage of nix
   1. Install Node.js (current version is 19_x)
-  2. Execute `node main.js` script
+  2. Install all dependencies by running your package manager of choice
+  3. Execute `node main.js` script
 
 ### Running the app:
 
